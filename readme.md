@@ -1,3 +1,3 @@
 # 🌌/Sigma
 
-simple declerative signals
+simple declerative signals for react

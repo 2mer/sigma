@@ -8,6 +8,8 @@ function identity<T>(v: T): T { return v };
 export type Signal<T> = ReturnType<typeof signalImpl<T>>
 export type ReadonlySignal<T> = Omit<Signal<T>, 'readonly'>
 
+export const SignalSymbol = Symbol('Signal');
+
 function signalImpl<T>(value: T) {
 
 	type Events = {
@@ -57,6 +59,12 @@ function signalImpl<T>(value: T) {
 
 		use,
 
+		useEffect(handler: Handler, deps = []) {
+			useEffect(() => {
+				return $.sub(handler);
+			}, deps)
+		},
+
 		get value() {
 			return state.value
 		},
@@ -68,6 +76,8 @@ function signalImpl<T>(value: T) {
 		display(formatter?: (v: T) => unknown) {
 			return <SignalValue signal$={readonly$} formatter={formatter} />
 		},
+
+		[SignalSymbol]: true,
 
 	}
 
@@ -93,6 +103,8 @@ function signalImpl<T>(value: T) {
 		get readonly() {
 			return readonly$
 		},
+
+		[SignalSymbol]: true
 	}
 
 	return $;
@@ -101,4 +113,8 @@ function signalImpl<T>(value: T) {
 
 export function signal<T>(v: T): Signal<T> {
 	return signalImpl(v)
+}
+
+export function isSignal(o: any): o is Signal<any> {
+	return SignalSymbol in o;
 }
