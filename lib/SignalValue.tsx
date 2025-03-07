@@ -1,10 +1,18 @@
-import React, { useEffect, useRef } from "react";
+import React, { type ComponentProps, useEffect, useRef } from "react";
 import type { ReadonlySignal } from "./signal";
 
+/**
+ * A component used to display the contents of a signal into a span.
+ * the content is directly applied to the dom and does not cause unecessary re-renders in react
+ */
 function SignalValue<T>({
 	signal$,
 	formatter = (v) => String(v),
-}: { signal$: ReadonlySignal<T>; formatter?: (v: T) => unknown }) {
+	...rest
+}: {
+	signal$: ReadonlySignal<T>;
+	formatter?: (v: T) => unknown;
+} & ComponentProps<"span">) {
 	const ref = useRef<HTMLSpanElement>(null);
 	const formatterRef = React.useRef(formatter);
 
@@ -19,7 +27,11 @@ function SignalValue<T>({
 		});
 	}, [signal$]);
 
-	return <span ref={ref}>{String(formatter(signal$.value))}</span>;
+	return (
+		<span ref={ref} {...rest}>
+			{String(formatter(signal$.value))}
+		</span>
+	);
 }
 
 export default SignalValue;

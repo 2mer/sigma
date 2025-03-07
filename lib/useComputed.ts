@@ -3,6 +3,14 @@ import useSignal from "./useSignal";
 import useConst from "./useConst";
 import { isSignal, type Signal, type ReadonlySignal } from "./signal";
 
+/**
+ * A hook that creates a signal which is populated with the value of the compute function whenever the hook's dependencies change
+ * Signals passed to the dependencies are tracked for changes
+ *
+ * @param compute the computation handler
+ * @param deps dependencies which cause the hook to recompute. if a dependency is a `Signal` it is also subscribed for changes.
+ * @returns
+ */
 export function useComputed<T extends () => unknown>(
 	compute: T,
 	deps: any[],
