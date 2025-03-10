@@ -1,4 +1,4 @@
-import React, { type ComponentProps } from "react";
+import React, { memo, type ComponentProps } from "react";
 import EventEmitter from "eventemitter3";
 import { useEffect, useState } from "react";
 import SignalValue from "./SignalValue";
@@ -105,9 +105,9 @@ function signalImpl<T>(value: T) {
 		/**
 		 * a component used to display a signal's value efficiently directly into the dom
 		 */
-		display(props: ComponentProps<'span'> & { formatter?: (v: T) => unknown }) {
+		display: memo((props: ComponentProps<'span'> & { formatter?: (v: T) => unknown }) => {
 			return <SignalValue signal$={readonly$} {...props} />;
-		},
+		}),
 
 		[SignalSymbol]: true,
 	};
